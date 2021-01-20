@@ -31,7 +31,7 @@ Carmen Esposito,<sup>1</sup> Gregory A. Landrum,<sup>1,2</sup> Nadine Schneider,
 The threshold optimization methods have been validated agaist 138 public datasets and these are all provided here in the folder `data`.
 
 ### Dependencies:
-A list of dependencies is available in the file `ghost.env`. This conda environmet was used to obtain the results reported in our work.
+A list of dependencies is available in the file `ghost_env.yml`. This conda environmet was used to obtain the results reported in our work.
 
 ## Authors
 [Carmen Esposito]() (GHOST procedure), [Gregory Landrum](https://github.com/greglandrum) (oob-based threshold optimization approach, data collection, and code improvement), [Volkamer Lab](https://github.com/volkamerlab) (functions for conformal prediction), [Nadine Schneider](https://github.com/NadineSchneider) (bugs spotting and code improvement). 
