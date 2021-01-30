@@ -24,7 +24,7 @@ Carmen Esposito,<sup>1</sup> Gregory A. Landrum,<sup>1,2</sup> Nadine Schneider,
   Here, the code is only executed for 6 public datasets and the random forest model.
   
 - **Reproduce_Results_Public_Datasets.ipynb** <br />
-  Notebook that can be used to reproduce the results reported in our work.
+  Notebook to reproduce the results reported in our work.
   Here, results are produced for all 138 public datasets. The user can choose between four different machine learning methods, namely random forest (RF), gradient boosting (GB), XGBoost (XGB), and logistic regression (LR). The user can also choose between two different molecular descriptors, ECFP4 and RDKit2D.
   
 ### Data:
