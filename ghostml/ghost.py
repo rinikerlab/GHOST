@@ -78,7 +78,7 @@ def optimize_threshold_from_predictions(labels, probs, thresholds,
                     Nsamples = int(df_preds.shape[0]*subsets_size)
                 elif isinstance(subsets_size, int):
                     Nsamples = subsets_size                    
-                df_subset = resample(df_preds, n_samples = Nsamples, stratify=labels, random_state = random_seeds[i])
+                df_subset = resample(df_preds, replace=True, n_samples = Nsamples, stratify=labels, random_state = random_seeds[i])
                 labels_subset = df_subset['labels']
             else:
                 df_tmp, df_subset, labels_tmp, labels_subset = train_test_split(df_preds, labels, test_size = subsets_size, stratify = labels, random_state = random_seeds[i])

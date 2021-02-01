@@ -56,8 +56,6 @@ class TestGHOST(unittest.TestCase):
         self.assertAlmostEqual(kappa,0.731,places=3)
         self.assertAlmostEqual(auc,0.943,places=3)
 
-        # optimize the decision thresholds based on the prediction probabilities of N training subsets
-        # Can be used for every machine learning model
         thresh_sub = ghost.optimize_threshold_from_predictions( labels_train, train_probs, thresholds,
                                                                 ThOpt_metrics = 'Kappa', 
                                                                 N_subsets = 100, subsets_size = 0.2, 
@@ -66,6 +64,26 @@ class TestGHOST(unittest.TestCase):
         scores = [1 if x>=thresh_sub else 0 for x in test_probs]
         kappa = metrics.cohen_kappa_score(labels_test,scores)
         self.assertAlmostEqual(kappa,0.784,places=3)
+
+        thresh_sub = ghost.optimize_threshold_from_predictions( labels_train, train_probs, thresholds,
+                                                                ThOpt_metrics = 'ROC', 
+                                                                N_subsets = 100, subsets_size = 0.2, 
+                                                                with_replacement = False, random_seed = random_seed) 
+        self.assertAlmostEqual(thresh_sub,0.20,places=2)
+        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test,scores)
+        self.assertAlmostEqual(kappa,0.731,places=3)
+
+        thresh_sub = ghost.optimize_threshold_from_predictions( labels_train, train_probs, thresholds,
+                                                                ThOpt_metrics = 'Kappa', 
+                                                                N_subsets = 100, subsets_size = 0.2, 
+                                                                with_replacement = True, random_seed = random_seed) 
+        self.assertAlmostEqual(thresh_sub,0.25,places=2)
+        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test,scores)
+        self.assertAlmostEqual(kappa,0.784,places=3)
+
+
 
 if __name__=='__main__':
     unittest.main()
