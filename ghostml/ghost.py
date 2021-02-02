@@ -120,6 +120,49 @@ def optimize_threshold_from_predictions(labels, probs, thresholds,
         opt_thresh = thresholds[np.argmax(roc_dist_01corner)]
     return opt_thresh
 
+def optimize_threshold_from_oob_predictions(labels_train, oob_probs, thresholds, ThOpt_metrics = 'Kappa'):
+    """Optimize the decision threshold based on the prediction probabilities of the out-of-bag set of random forest.
+    The threshold that maximizes the Cohen's kappa coefficient or a ROC-based criterion 
+    on the out-of-bag set is chosen as optimal.
+    
+    Parameters
+    ----------
+    labels_train: list of int
+        True labels for the training set
+    oob_probs : list of floats
+        Majority class prediction probabilities for the out-of-bag set of a trained random forest model
+    thresholds: list of floats
+        List of decision thresholds to screen for classification
+    ThOpt_metrics: str
+        Optimization metric. Choose between "Kappa" and "ROC"
+        
+    Returns
+    ----------
+    thresh: float
+        Optimal decision threshold for classification
+    """
+
+    # Optmize the decision threshold based on the Cohen's Kappa coefficient
+    if ThOpt_metrics == 'Kappa':
+        tscores = []
+        # evaluate the score on the oob using different thresholds
+        for thresh in thresholds:
+            scores = [1 if x>=thresh else 0 for x in oob_probs]
+            kappa = metrics.cohen_kappa_score(labels_train,scores)
+            tscores.append((np.round(kappa,3),thresh))
+        # select the threshold providing the highest kappa score as optimal
+        tscores.sort(reverse=True)
+        thresh = tscores[0][-1]
+    # Optmize the decision threshold based on the ROC-curve
+    elif ThOpt_metrics == 'ROC':
+        # ROC optimization with thresholds determined by the roc_curve function of sklearn
+        fpr, tpr, thresholds_roc = metrics.roc_curve(labels_train, oob_probs, pos_label=1)
+        specificity = 1-fpr
+        roc_dist_01corner = (2*tpr*specificity)/(tpr+specificity)
+        thresh = thresholds_roc[np.argmax(roc_dist_01corner)]
+    return thresh
+
+
 
 def helper_calc_median_std(specificity):
     # Calculate median and std of the columns of a pandas dataframe
