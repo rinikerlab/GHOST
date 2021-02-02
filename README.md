@@ -37,7 +37,7 @@ A list of dependencies is available in the file `ghost_env.yml`. This conda envi
 [Carmen Esposito]() (GHOST procedure) and [Greg Landrum](https://github.com/greglandrum) (oob-based threshold optimization approach, data collection, [initial code](https://github.com/greglandrum/rdkit_blog/blob/master/notebooks/Working%20with%20unbalanced%20data%20part%201.ipynb)).
 
 ## Acknowledgements
-Conformal prediction (CP) experiments were adapted from the [CP functions](https://github.com/volkamerlab/knowtox_manuscript_SI) provided by the (Volkamer Lab)[https://volkamerlab.org/].  
+Conformal prediction (CP) experiments were adapted from the [CP functions](https://github.com/volkamerlab/knowtox_manuscript_SI) provided by the [Volkamer Lab](https://volkamerlab.org/).  
 
 ## License
 
