@@ -14,10 +14,10 @@ Carmen Esposito,<sup>1</sup> Gregory A. Landrum,<sup>1,2</sup> Nadine Schneider,
 ### Notebooks:
 
 - **example_oob_threshold_optimization.ipynb** <br />
-  Notebook containing the oob-based threshold optimization function and a simple example 
+  Eexample of how to use the oob-based thresholding method to optimize the decision threshold of a random forest classifier. 
 
 - **example_GHOST.ipynb** <br />
-  Notebook containing the GHOST (**G**eneralized t**H**resh**O**ld **S**hif**T**ing) function and a simple example 
+  Example of how to use GHOST (**G**eneralized t**H**resh**O**ld **S**hif**T**ing) to optimize the decision threshold of classification models. 
   
 - **Tutorial_Threshold_Optimization_RF.ipynb** <br />
   Notebook explaining step by step how to reproduce the results reported in our work.
@@ -26,7 +26,13 @@ Carmen Esposito,<sup>1</sup> Gregory A. Landrum,<sup>1,2</sup> Nadine Schneider,
 - **Reproduce_Results_Public_Datasets.ipynb** <br />
   Notebook to reproduce the results reported in our work.
   Here, results are produced for all 138 public datasets. The user can choose between four different machine learning methods, namely random forest (RF), gradient boosting (GB), XGBoost (XGB), and logistic regression (LR). The user can also choose between two different molecular descriptors, ECFP4 and RDKit2D.
-  
+
+- **DeepChem_PubChem.ipynb** <br />
+  Notebook to reproduce the results of the multi-task classification models for the PubChem datasets.
+
+- **DeepChem_MoleculeNet.ipynb** <br />
+  Notebook to reproduce the results of the multi-task classification models for the MoleculeNet datasets.
+
 ### Data:
 The threshold optimization methods have been validated agaist 138 public datasets and these are all provided here in the folder `data`.
 
