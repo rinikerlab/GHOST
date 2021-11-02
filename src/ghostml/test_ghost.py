@@ -23,109 +23,153 @@ import unittest
 import numpy as np
 import pandas as pd
 import pickle
-import ghost
-from sklearn.ensemble import GradientBoostingClassifier,RandomForestClassifier
+from . import ghost
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn import metrics
+import os
+import pathlib
+
 
 class TestGHOST(unittest.TestCase):
     def test_1(self):
-        thresholds = np.round(np.arange(0.05,0.55,0.05),2)
+        thresholds = np.round(np.arange(0.05, 0.55, 0.05), 2)
         random_seed = 16
 
-        with open('test_data/chembl3371_testing_data.pkl','rb') as inf:
+        with open(
+                os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             'test_data/chembl3371_testing_data.pkl'),
+                'rb') as inf:
             tpl = pickle.load(inf)
 
-        fps_train, fps_test, labels_train, labels_test, names_train, names_test = tpl    
+        fps_train, fps_test, labels_train, labels_test, names_train, names_test = tpl
         # train classifier
-        cls = GradientBoostingClassifier(n_estimators = 100, validation_fraction = 0.2, n_iter_no_change = 10, 
-                                        tol = 0.01, random_state=random_seed)
+        cls = GradientBoostingClassifier(n_estimators=100,
+                                         validation_fraction=0.2,
+                                         n_iter_no_change=10,
+                                         tol=0.01,
+                                         random_state=random_seed)
         cls.fit(fps_train, labels_train)
 
         # predict the train set
-        train_probs = cls.predict_proba(fps_train)[:,1] #prediction probabilities for the train set
+        train_probs = cls.predict_proba(
+            fps_train)[:, 1]  #prediction probabilities for the train set
         # predict the test set
-        test_probs = cls.predict_proba(fps_test)[:,1] #prediction probabilities for the test set
+        test_probs = cls.predict_proba(
+            fps_test)[:, 1]  #prediction probabilities for the test set
         #store predictions in dataframe
-        scores = [1 if x>=0.5 else 0 for x in test_probs]
-        df_preds = pd.DataFrame({'mol_names': names_test, 'y_true': labels_test, 'standard': scores})
+        scores = [1 if x >= 0.5 else 0 for x in test_probs]
+        df_preds = pd.DataFrame({
+            'mol_names': names_test,
+            'y_true': labels_test,
+            'standard': scores
+        })
 
         # generate and show some evaluation stats for the model on the test data:
 
         auc = metrics.roc_auc_score(labels_test, test_probs)
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.731,places=3)
-        self.assertAlmostEqual(auc,0.943,places=3)
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.731, places=3)
+        self.assertAlmostEqual(auc, 0.943, places=3)
 
-        thresh_sub = ghost.optimize_threshold_from_predictions( labels_train, train_probs, thresholds,
-                                                                ThOpt_metrics = 'Kappa', 
-                                                                N_subsets = 100, subsets_size = 0.2, 
-                                                                with_replacement = False, random_seed = random_seed) 
-        self.assertAlmostEqual(thresh_sub,0.25,places=2)
-        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.784,places=3)
+        thresh_sub = ghost.optimize_threshold_from_predictions(
+            labels_train,
+            train_probs,
+            thresholds,
+            ThOpt_metrics='Kappa',
+            N_subsets=100,
+            subsets_size=0.2,
+            with_replacement=False,
+            random_seed=random_seed)
+        self.assertAlmostEqual(thresh_sub, 0.25, places=2)
+        scores = [1 if x >= thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.784, places=3)
 
-        thresh_sub = ghost.optimize_threshold_from_predictions( labels_train, train_probs, thresholds,
-                                                                ThOpt_metrics = 'ROC', 
-                                                                N_subsets = 100, subsets_size = 0.2, 
-                                                                with_replacement = False, random_seed = random_seed) 
-        self.assertAlmostEqual(thresh_sub,0.20,places=2)
-        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.731,places=3)
+        thresh_sub = ghost.optimize_threshold_from_predictions(
+            labels_train,
+            train_probs,
+            thresholds,
+            ThOpt_metrics='ROC',
+            N_subsets=100,
+            subsets_size=0.2,
+            with_replacement=False,
+            random_seed=random_seed)
+        self.assertAlmostEqual(thresh_sub, 0.20, places=2)
+        scores = [1 if x >= thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.731, places=3)
 
-        thresh_sub = ghost.optimize_threshold_from_predictions( labels_train, train_probs, thresholds,
-                                                                ThOpt_metrics = 'Kappa', 
-                                                                N_subsets = 100, subsets_size = 0.2, 
-                                                                with_replacement = True, random_seed = random_seed) 
-        self.assertAlmostEqual(thresh_sub,0.25,places=2)
-        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.784,places=3)
+        thresh_sub = ghost.optimize_threshold_from_predictions(
+            labels_train,
+            train_probs,
+            thresholds,
+            ThOpt_metrics='Kappa',
+            N_subsets=100,
+            subsets_size=0.2,
+            with_replacement=True,
+            random_seed=random_seed)
+        self.assertAlmostEqual(thresh_sub, 0.25, places=2)
+        scores = [1 if x >= thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.784, places=3)
 
     def test_2(self):
-        thresholds = np.round(np.arange(0.05,0.55,0.05),2)
+        thresholds = np.round(np.arange(0.05, 0.55, 0.05), 2)
         random_seed = 16
 
-        with open('test_data/chembl3371_testing_data.pkl','rb') as inf:
+        with open(
+                os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             'test_data/chembl3371_testing_data.pkl'),
+                'rb') as inf:
             tpl = pickle.load(inf)
 
-        fps_train, fps_test, labels_train, labels_test, names_train, names_test = tpl    
+        fps_train, fps_test, labels_train, labels_test, names_train, names_test = tpl
         # train classifier
-        cls = RandomForestClassifier(n_estimators = 500, max_depth = 15, min_samples_leaf = 2,oob_score = True,
-                                     n_jobs=4, random_state=random_seed)
+        cls = RandomForestClassifier(n_estimators=500,
+                                     max_depth=15,
+                                     min_samples_leaf=2,
+                                     oob_score=True,
+                                     n_jobs=4,
+                                     random_state=random_seed)
         cls.fit(fps_train, labels_train)
 
         oob_probs = [x[1] for x in cls.oob_decision_function_]
 
         # predict the test set
-        test_probs = cls.predict_proba(fps_test)[:,1] #prediction probabilities for the test set
+        test_probs = cls.predict_proba(
+            fps_test)[:, 1]  #prediction probabilities for the test set
         #store predictions in dataframe
-        scores = [1 if x>=0.5 else 0 for x in test_probs]
+        scores = [1 if x >= 0.5 else 0 for x in test_probs]
 
         # generate and show some evaluation stats for the model on the test data:
 
         auc = metrics.roc_auc_score(labels_test, test_probs)
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.726,places=3)
-        self.assertAlmostEqual(auc,0.951,places=3)
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.726, places=3)
+        self.assertAlmostEqual(auc, 0.951, places=3)
 
-        thresh_sub = ghost.optimize_threshold_from_oob_predictions( labels_train, oob_probs, thresholds,
-                                                                ThOpt_metrics = 'Kappa', 
-                                                                ) 
-        self.assertAlmostEqual(thresh_sub,0.30,places=2)
-        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.809,places=3)
+        thresh_sub = ghost.optimize_threshold_from_oob_predictions(
+            labels_train,
+            oob_probs,
+            thresholds,
+            ThOpt_metrics='Kappa',
+        )
+        self.assertAlmostEqual(thresh_sub, 0.30, places=2)
+        scores = [1 if x >= thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.809, places=3)
 
-        thresh_sub = ghost.optimize_threshold_from_oob_predictions( labels_train, oob_probs, thresholds,
-                                                                ThOpt_metrics = 'ROC', 
-                                                                ) 
-        self.assertAlmostEqual(thresh_sub,0.21,places=2)
-        scores = [1 if x>=thresh_sub else 0 for x in test_probs]
-        kappa = metrics.cohen_kappa_score(labels_test,scores)
-        self.assertAlmostEqual(kappa,0.747,places=3)
+        thresh_sub = ghost.optimize_threshold_from_oob_predictions(
+            labels_train,
+            oob_probs,
+            thresholds,
+            ThOpt_metrics='ROC',
+        )
+        self.assertAlmostEqual(thresh_sub, 0.21, places=2)
+        scores = [1 if x >= thresh_sub else 0 for x in test_probs]
+        kappa = metrics.cohen_kappa_score(labels_test, scores)
+        self.assertAlmostEqual(kappa, 0.747, places=3)
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     unittest.main()
