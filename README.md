@@ -11,8 +11,14 @@ Carmen Esposito,<sup>1</sup> Gregory A. Landrum,<sup>1,2</sup> Nadine Schneider,
 
 ## Installing GHOST
 
-You can install GHOST from pypi:
-
+You can install the most recent release of GHOST from pypi:
+```
+python -m pip install ghostml
+```
+or, if you want to install the development version directly from github:
+```
+python -m pip install git+https://github.com/rinikerlab/GHOST
+```
 
 ## Content
 
@@ -42,7 +48,7 @@ You can install GHOST from pypi:
   Notebook to reproduce the results of the multi-task classification models for the MoleculeNet datasets.
 
 ### Validation Data:
-The threshold optimization methods have been validated agaist 138 public datasets and these are all provided here in the folder `data`.
+The threshold optimization methods have been validated agaist 138 public datasets and these are all provided here in the folder `notebooks/data`.
 
 ### Dependencies:
 If you are just interested in using ghostml in your own code/notebooks, you'll just need these packages:
@@ -54,7 +60,7 @@ If you are just interested in using ghostml in your own code/notebooks, you'll j
 A list of dependencies to run the example notebooks is available in the file `notebooks/ghost_env.yml`. This conda environment was used to obtain the results reported in our work.
 
 ## Authors
-[Carmen Esposito]() (GHOST procedure) and [Greg Landrum](https://github.com/greglandrum) (oob-based threshold optimization approach, data collection, [initial code](https://github.com/greglandrum/rdkit_blog/blob/master/notebooks/Working%20with%20unbalanced%20data%20part%201.ipynb)).
+[Carmen Esposito](https://github.com/cespos) (GHOST procedure) and [Greg Landrum](https://github.com/greglandrum) (oob-based threshold optimization approach, data collection, [initial code](https://github.com/greglandrum/rdkit_blog/blob/master/notebooks/Working%20with%20unbalanced%20data%20part%201.ipynb)).
 
 ## Acknowledgements
 Conformal prediction (CP) experiments were adapted from the [CP functions](https://github.com/volkamerlab/knowtox_manuscript_SI) provided by the [Volkamer Lab](https://volkamerlab.org/).  
