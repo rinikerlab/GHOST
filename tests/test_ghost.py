@@ -23,7 +23,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import pickle
-from . import ghost
+from ghostml import ghost
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn import metrics
 import os
